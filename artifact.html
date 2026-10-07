@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dossiê — Matheus Laranjo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0C0616;
+    --plum:#190E2C;
+    --violet:#7C3AED;
+    --iris:#4C1D95;
+    --lilac:#CFC3F5;
+    --fuchsia:#E879F9;
+    --paper:#F4F0FF;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    min-height:100dvh;
+    display:grid;
+    place-items:center;
+    padding:32px 20px;
+    font-family:"Inter", system-ui, sans-serif;
+    color:var(--paper);
+    background:
+      radial-gradient(65% 55% at 12% -5%, rgba(124,58,237,.40), transparent 70%),
+      radial-gradient(55% 50% at 95% 105%, rgba(232,121,249,.22), transparent 72%),
+      var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .flashcard{
+    display:block;
+    width:min(88vw, 380px);
+    aspect-ratio:5/7;
+    max-height:78dvh;
+    padding:0;
+    border:0;
+    background:transparent;
+    color:inherit;
+    font:inherit;
+    cursor:pointer;
+    perspective:1400px;
+  }
+
+  .flashcard:focus-visible{
+    outline:2px solid var(--fuchsia);
+    outline-offset:8px;
+    border-radius:24px;
+  }
+
+  .card-inner{
+    position:relative;
+    display:block;
+    width:100%;
+    height:100%;
+    transform-style:preserve-3d;
+    transition:transform .75s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .flashcard.is-open .card-inner{
+    transform:rotateY(180deg);
+  }
+
+  .face{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    padding:clamp(20px,6vw,30px);
+    border-radius:22px;
+    overflow:hidden;
+    text-align:left;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    transition:border-color .3s ease, box-shadow .3s ease;
+  }
+
+  .face::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:3px;
+    background:linear-gradient(90deg, var(--iris), var(--violet), var(--fuchsia));
+  }
+
+  .face--front{
+    background:linear-gradient(158deg, #251338 0%, #120A22 62%);
+    border:1px solid rgba(207,195,245,.16);
+    box-shadow:0 34px 70px -34px rgba(76,29,149,.95), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+
+  .face--back{
+    transform:rotateY(180deg);
+    background:linear-gradient(158deg, #2B1247 0%, #150A28 62%);
+    border:1px solid rgba(232,121,249,.24);
+    box-shadow:0 34px 70px -34px rgba(124,58,237,.9), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+
+  .flashcard:hover .face--front{ border-color:rgba(207,195,245,.36); }
+  .flashcard:hover .face--back{ border-color:rgba(232,121,249,.5); }
+
+  .filetop{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    font-size:.68rem;
+    font-weight:600;
+    letter-spacing:.09em;
+    color:rgba(207,195,245,.62);
+  }
+
+  .status{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+
+  .status i{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--fuchsia);
+    box-shadow:0 0 10px var(--fuchsia);
+  }
+
+  .name{
+    margin-top:auto;
+    font-family:"Syne", sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem, 9.5vw, 3.05rem);
+    line-height:.94;
+    letter-spacing:-.02em;
+    color:var(--paper);
+  }
+
+  .name span{ display:block; color:var(--lilac); }
+
+  .role{
+    margin-top:14px;
+    max-width:26ch;
+    font-size:.86rem;
+    line-height:1.5;
+    color:rgba(207,195,245,.78);
+  }
+
+  .fields{
+    display:grid;
+    gap:7px;
+    margin-top:22px;
+    padding-top:16px;
+    border-top:1px solid rgba(207,195,245,.14);
+    font-size:.76rem;
+    color:rgba(207,195,245,.85);
+  }
+
+  .fields span{
+    display:flex;
+    gap:10px;
+  }
+
+  .fields em{
+    flex:0 0 62px;
+    font-style:normal;
+    color:rgba(207,195,245,.48);
+  }
+
+  .hint{
+    margin-top:18px;
+    font-size:.7rem;
+    letter-spacing:.05em;
+    color:rgba(207,195,245,.55);
+  }
+
+  .interests{
+    display:grid;
+    gap:2px;
+    margin-top:auto;
+  }
+
+  .row{
+    display:grid;
+    gap:3px;
+    padding:11px 0;
+    border-bottom:1px solid rgba(207,195,245,.12);
+  }
+
+  .row:last-child{ border-bottom:0; }
+
+  .row b{
+    font-family:"Syne", sans-serif;
+    font-weight:600;
+    font-size:1rem;
+    letter-spacing:-.01em;
+    color:var(--paper);
+  }
+
+  .row small{
+    font-size:.78rem;
+    line-height:1.45;
+    color:rgba(207,195,245,.7);
+  }
+
+  @media (max-width:400px){
+    .fields em{ flex-basis:54px; }
+    .role{ font-size:.8rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .card-inner{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<button class="flashcard" type="button" aria-pressed="false"
+        aria-label="Ficha de Matheus Laranjo. Ative para ver os interesses.">
+  <span class="card-inner">
+
+    <span class="face face--front">
+      <span class="filetop">
+        <span>ARQ. 07-LRJ</span>
+        <span class="status"><i></i>perfil ativo</span>
+      </span>
+
+      <span class="name">Matheus<span>Laranjo</span></span>
+
+      <span class="role">Jogador, espectador e investigador de plantão.</span>
+
+      <span class="fields">
+        <span><em>Arquivo</em><span>001 — perfil pessoal</span></span>
+        <span><em>Setor</em><span>entretenimento &amp; mistério</span></span>
+        <span><em>Status</em><span>em observação</span></span>
+      </span>
+
+      <span class="hint">clique na ficha para virar</span>
+    </span>
+
+    <span class="face face--back">
+      <span class="filetop">
+        <span>INTERESSES</span>
+        <span class="status"><i></i>4 registros</span>
+      </span>
+
+      <span class="interests">
+        <span class="row">
+          <b>Jogos</b>
+          <small>do speedrun ao 100%, depende do humor do dia</small>
+        </span>
+        <span class="row">
+          <b>Animes</b>
+          <small>maratona emendada, com direito a madrugada</small>
+        </span>
+        <span class="row">
+          <b>Séries</b>
+          <small>"só mais um episódio" e nunca é só um</small>
+        </span>
+        <span class="row">
+          <b>Casos de investigação</b>
+          <small>true crime, perícia e dossiê aberto na mesa</small>
+        </span>
+      </span>
+
+      <span class="hint">clique de novo para fechar a ficha</span>
+    </span>
+
+  </span>
+</button>
+
+<script>
+  const ficha = document.querySelector('.flashcard');
+  ficha.addEventListener('click', () => {
+    const aberta = ficha.classList.toggle('is-open');
+    ficha.setAttribute('aria-pressed', String(aberta));
+  });
+</script>
+
+</body>
+</html>
